@@ -1,0 +1,41 @@
+sudo: required
+services:
+- docker
+env:
+  global:
+  - POSTGRES_URI="user=pguser password=pguser dbname=api host=cryplio_api_postgres
+    sslmode=disable"
+  - secure: ai4gTc2z1SkbJ3SmAB7K6m6+fOZ6diCp7h//aHhgoFIJQsWFAfLmflJakOhEiDMHJ1SC2u54el7w47oOEz9KRNu5bPXpt8iN2Nv+mW76ReoHEniuI0e+YnsdTHrbo3PJx6+90mChUxUzwJDs+wgMkNjJxqBho05gRx1ef3H1/sfhXRxBP6u1K/nkOeJF3338AQOPf444t43ulfbMJh1FNcrTVCkwlnUJWVCdeDLNNMIF2fiKvAp3cXCPhM1akbKOoPQKknH5ElmPIiV8clvhOw+K2EiXvhTG/BZn61uCr9aJ5NQvbXLPiqlrwqTzFGH8jP1Iehy1g7mCSWfxeahVuzzUs3pJ5vsXuG8H7niFWfE3MLJoCOd7Cu1k6bberfUecnxOIZAkvaIuXZO/fHVkTualmWvuGdp5YUnchlkgmOrlVLoSXwnjo8Z7Zfs4NRNQWAv7OHAVEIEOzM/Is8YIbpB5eMhW8QpPVmCVUXDPcA6tEUOJ1gB4fEkmlIZx0dYuOuTqG55TRbVT0niwJ2LlIpG9jg/XLKozYXlghZtUZ3k0MYnmNnmB9F2IuyxljUaux1kb/zcZV3a28VKP46aXe2tWTc0wZ6SOSmtZ5OTVBuTATn3ygkbOO8ftcF4xQgv+OeGG9UZzWESeLUCGHzq9vCC40WmtzLyS9zE7U/IZnwE=
+install:
+- cp config/api-common.env config/api.env
+- cp config/database-common.env config/database.env
+- docker-compose build
+- docker-compose up -d
+script:
+- until docker-compose exec database psql "$POSTGRES_URI" -c "select 1" > /dev/null
+  2>&1; do sleep 2; done
+- docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api &&
+  make migration"
+- docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api/src
+  && ../go.test.sh"
+after_success:
+- docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api/src
+  && CODECOV_ENV=$CODECOV_ENV CODECOV_TOKEN=$CODECOV_TOKEN CODECOV_URL=$CODECOV_URL
+  CODECOV_SLUG=$CODECOV_SLUG VCS_COMMIT_ID=$VCS_COMMIT_ID VCS_BRANCH_NAME=$VCS_BRANCH_NAME
+  VCS_PULL_REQUEST=$VCS_PULL_REQUEST VCS_SLUG=$VCS_SLUG VCS_TAG=$VCS_TAG CI_BUILD_URL=$CI_BUILD_URL
+  CI_BUILD_ID=$CI_BUILD_ID CI_JOB_ID=$CI_JOB_ID CI=$CI TRAVIS=$TRAVIS SHIPPABLE=$SHIPPABLE
+  TRAVIS_BRANCH=$TRAVIS_BRANCH TRAVIS_COMMIT=$TRAVIS_COMMIT TRAVIS_JOB_NUMBER=$TRAVIS_JOB_NUMBER
+  TRAVIS_PULL_REQUEST=$TRAVIS_PULL_REQUEST TRAVIS_JOB_ID=$TRAVIS_JOB_ID TRAVIS_REPO_SLUG=$TRAVIS_REPO_SLUG
+  TRAVIS_TAG=$TRAVIS_TAG TRAVIS_OS_NAME=$TRAVIS_OS_NAME include_cov=coverage.txt bash
+  <(curl -s https://codecov.io/bash)"
+deploy:
+- provider: script
+  on: staging
+  skip_cleanup: true
+  script: "./deploy_staging.sh"
+notifications:
+  email:
+    recipients:
+      secure: "M0lQ30kR1vQWreoEXIZCRJl6HsTkVGjNsddAyEnqf3wi/ZSXihp2KKqgnKgrU9sOkhCt4og5HG9rUXfRQs7+KNkVfi0jn4AwMvvqk8LWLUAoMCoS3XBN96vweaTt/f6jx/SOx8PGbOHX/m1nv0QytWTs13xc7TpFwRMyC0Zsjwshe0/TTbDZmxaZ1MnadjG44PQnfP2u5HWL0MIitunuTD3sZH8wL7z21tHFerILJW9TYKZbakOJyepLIp5+2pisVSFOXTLoxJHHcrIQfLYyM6AsuOyWGNYZnX4wAtpAMNv1i3UYfWbdCA3wkCQsCAF8nAd1HAP2Z8jifvEzVVYvrGK2I41lmN23m4CUnhISG4rClMZlT7bkABJ1Zvgk69FDPwhH0OjI2Eok+LasfxakpbLRrxqHykbKYx3PwZSU7WlTwXvBqovE6srW57zgyfhE6Pk7/g8W2W60aD512nclvBnUXsKNP2TDWWH0W71I+HKWn5a5s7TIZvs5DG3fhzhw+QW3hUJq3dV8flNBoUQFOBQkj+P8OZA3Uk7rcOIJ+BSnYQrxRCMrUfqJ2r+45Cakg55ne4d0Mm7rLkz2zcDtJb/eu6Wvo4/OZgMGecaH06ErxCojM8gZb2cJ1qSs6qmlzusqDYoE/LIOaPIh+I5QKugEqQQd2XklnH8QmAaaXa8="
+    on_success: change
+    on_failure: always
