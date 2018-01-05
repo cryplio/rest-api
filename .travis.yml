@@ -17,7 +17,7 @@ script:
 - docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api &&
   make migration"
 - docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api/src
-  && ../go.test.sh"
+  && ../tools/go.test.sh"
 after_success:
 - docker-compose exec api /bin/bash -ic "cd /go/src/github.com/cryplio/rest-api/src
   && CODECOV_ENV=$CODECOV_ENV CODECOV_TOKEN=$CODECOV_TOKEN CODECOV_URL=$CODECOV_URL
@@ -32,7 +32,7 @@ deploy:
 - provider: script
   on: staging
   skip_cleanup: true
-  script: "./deploy_staging.sh"
+  script: "./tools/deploy_staging.sh"
 notifications:
   email:
     recipients:
