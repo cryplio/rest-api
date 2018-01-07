@@ -1,0 +1,55 @@
+### Update a user [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: basic [base64encoded userID:access_token]
+
+    + Attributes
+        + current_password (required, string) - Current user password. Required to update the email or the password
+        + name (string) - New Name to use
+        + email (string) - New Email address to use
+        + new_password (string) - New password to use
+
++ Response 200 (application/json)
+
+    The resource has been updated.
+
+    + Attributes (User)
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 401 (application/json)
+
+    The `current_password` does not match the user's password.
+
+    + Attributes (Error401)
+
++ Response 403 (application/json)
+
+    The requester does not have the permission to update this resource.
+
+    + Attributes (Error403)
+
++ Response 404 (application/json)
+
+    The resource does not exists
+
+    + Attributes (Error404)
+
++ Response 409 (application/json)
+
+    The unique value is already used by an other resource
+
+    + Attributes (DefaultError)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)

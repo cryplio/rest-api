@@ -1,0 +1,40 @@
+### Delete a user [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: basic [base64encoded userID:access_token]
+
+    + Attributes
+        + current_password (required, string) - Current user password
+
++ Response 204 (application/json)
+
+    The resource has been deleted
+
+    + Body
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 401 (application/json)
+
+    The `current_password` does not match the user's password
+
+    + Attributes (Error401)
+
++ Response 403 (application/json)
+
+    The requester does not have the permission to update this resource
+
+    + Attributes (Error403)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)

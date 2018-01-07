@@ -24,6 +24,7 @@ const (
 )
 
 // HTTPRequest represents an http request
+//go:generate mockgen -destination mockrouter/request.go -package mockrouter github.com/Nivl/go-rest-tools/router HTTPRequest
 type HTTPRequest interface {
 	String() string
 
