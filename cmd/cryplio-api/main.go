@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/cryplio/rest-api/modules/api"
+	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/gorilla/handlers"
 )
 

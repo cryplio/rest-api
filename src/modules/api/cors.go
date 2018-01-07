@@ -8,9 +8,9 @@ import (
 
 // AllowedOrigins is a list containing all origins allowed to hit the API
 var AllowedOrigins = handlers.AllowedOrigins([]string{
-	"https://www.litenkanin.com/",       // prod
-	"https://swan.litenkanin.com",       // staging
-	"http://orchid.litenkanin.com:4200", // local
+	"https://www.crypl.io/",       // prod
+	"https://swan.crypl.io",       // staging
+	"http://orchid.crypl.io:4200", // local
 })
 
 // AllowedMethods is a list containing all HTTP verb accepted by the API

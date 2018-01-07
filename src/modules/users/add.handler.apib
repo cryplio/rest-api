@@ -1,0 +1,32 @@
+### Add a new user [POST]
+
++ Request (application/json)
+
+    + Attributes
+        + name (required, string) - Name of the new user
+        + email (required, string) - Email address of the new user
+        + password (required, string) - Password of the new user
+
++ Response 201 (application/json)
+
+    The resource has been created.
+
+    + Attributes (User)
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 409 (application/json)
+
+    The email address is already in use by an other resource.
+
+    + Attributes (DefaultError)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)

@@ -15,8 +15,14 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/Nivl/go-hasher"
+  packages = [".","implementations/bcrypt"]
+  revision = "d84ff056614c63ff1ae0069fd4fd84a60f79bc3b"
+
+[[projects]]
+  branch = "master"
   name = "github.com/Nivl/go-logger"
-  packages = [".","implementations","implementations/lelogger","implementations/mocklogger"]
+  packages = [".","implementations","implementations/lelogger","implementations/mocklogger","implementations/stdlogger"]
   revision = "1d25d5fcf26a03d3f08d9dd6c7feae5b5ee110fe"
 
 [[projects]]
@@ -40,8 +46,8 @@
 [[projects]]
   branch = "master"
   name = "github.com/Nivl/go-rest-tools"
-  packages = ["dependencies","dependencies/mockdependencies","network/http/basicauth","router","router/guard","security/auth","types/apierror"]
-  revision = "e44a8aff98ab38abdd15c710cdf19da56badff00"
+  packages = ["dependencies","dependencies/mockdependencies","network/http/basicauth","network/http/httptests","paginator","router","router/guard","router/guard/testguard","router/mockrouter","security/auth","security/auth/testauth","testing/integration","types/apierror"]
+  revision = "fef992a67c68a2255a593d4e1613aa8446ebc7ae"
 
 [[projects]]
   branch = "master"
@@ -78,6 +84,12 @@
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/dchest/uniuri"
+  packages = ["."]
+  revision = "8902c56451e9b58ff940bbe5fec35d5f9c04584a"
 
 [[projects]]
   branch = "master"
@@ -152,6 +164,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/pressly/goose"
+  packages = ["."]
+  revision = "056a4d47dcc4d67fa3947a4f13945a5c690e568b"
+  version = "v2.1.0"
+
+[[projects]]
   name = "github.com/satori/go.uuid"
   packages = ["."]
   revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
@@ -171,21 +189,27 @@
 
 [[projects]]
   name = "github.com/stretchr/testify"
-  packages = ["assert"]
+  packages = ["assert","require"]
   revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
   version = "v1.2.0"
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["bcrypt","blowfish"]
+  revision = "0fcca4842a8d74bfddc2c96a073bd2a4d2a7a2e8"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
   packages = ["context","context/ctxhttp","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
-  revision = "d866cfc389cec985d6fda2859936a575a55a3ab6"
+  revision = "42fe2e1c20de1054d3d30f82cc9fb5b41e2e3767"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/oauth2"
   packages = [".","google","internal","jws","jwt"]
-  revision = "197281d4e0ecd78c33865daf9c6e51626feefcb2"
+  revision = "30785a2c434e431ef7c507b54617d6a951d5f2b4"
 
 [[projects]]
   branch = "master"
@@ -197,7 +221,7 @@
   branch = "master"
   name = "google.golang.org/api"
   packages = ["gensupport","googleapi","googleapi/internal/uritemplates","googleapi/transport","internal","iterator","option","storage/v1","transport","transport/grpc","transport/http"]
-  revision = "92c31202d4179425301c9ad5a63abd8df45a9674"
+  revision = "b1c0f9b3aa8fac163224fab909402d49c6dce50a"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -213,13 +237,13 @@
 
 [[projects]]
   name = "google.golang.org/grpc"
-  packages = [".","balancer","balancer/roundrobin","codes","connectivity","credentials","credentials/oauth","encoding","grpclb/grpc_lb_v1/messages","grpclog","internal","keepalive","metadata","naming","peer","resolver","resolver/dns","resolver/passthrough","stats","status","tap","transport"]
-  revision = "e687fa4e6424368ece6e4fe727cea2c806a0fcb4"
-  version = "v1.8.2"
+  packages = [".","balancer","balancer/base","balancer/roundrobin","codes","connectivity","credentials","credentials/oauth","encoding","grpclb/grpc_lb_v1/messages","grpclog","internal","keepalive","metadata","naming","peer","resolver","resolver/dns","resolver/passthrough","stats","status","tap","transport"]
+  revision = "f3955b8e9e244dd4dd4bc4f7b7a23a8445400a76"
+  version = "v1.9.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c3140278cb36746ec4cdef99bd2abc67090d50a4ad54ae91784af2fd0cd65030"
+  inputs-digest = "bf23cd64c80bb7a795ad6cc899f9adb1848e6f75b60fd22c361cad0646190b03"
   solver-name = "gps-cdcl"
   solver-version = 1

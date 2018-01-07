@@ -5,6 +5,7 @@ import (
 	"github.com/Nivl/go-filestorage/implementations/fsstorage"
 	"github.com/Nivl/go-filestorage/implementations/gcstorage"
 	"github.com/Nivl/go-logger/implementations/lelogger"
+	"github.com/Nivl/go-logger/implementations/stdlogger"
 	mailer "github.com/Nivl/go-mailer"
 	"github.com/Nivl/go-mailer/implementations/printmailer"
 	"github.com/Nivl/go-mailer/implementations/sendgridmailer"
@@ -19,7 +20,7 @@ import (
 
 // Args represents the app args
 type Args struct {
-	Port                   string `default:"5000"`
+	Port                   string `default:"5002"`
 	PostgresURI            string `required:"true" envconfig:"postgres_uri"`
 	LogEntriesToken        string `envconfig:"logentries_token"`
 	SendgridAPIKey         string `envconfig:"sendgrid_api_key"`
@@ -57,6 +58,7 @@ func Setup(params *Args, deps dependencies.Dependencies) error {
 	}
 	deps.SetDB(sqlClient)
 
+	deps.SetLoggerCreator(stdlogger.NewCreator())
 	if params.LogEntriesToken != "" {
 		creator, err := lelogger.NewSharedCreator(params.LogEntriesToken)
 		if err != nil {

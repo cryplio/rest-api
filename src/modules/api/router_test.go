@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/cryplio/rest-api/modules/api"
+	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/golang/mock/gomock"
 
 	"github.com/Nivl/go-filestorage/implementations/mockfilestorage"

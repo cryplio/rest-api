@@ -1,0 +1,26 @@
+### Get a user [GET]
+
++ Request (application/json)
+
+
++ Response 200 (application/json)
+
+    + Attributes (User)
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 404 (application/json)
+
+    The resoure does not exist
+
+    + Attributes (Error404)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)
