@@ -7,7 +7,7 @@ CREATE TABLE user_portfolios (
   updated_at timestamptz NOT NULL,
   deleted_at timestamptz,
   user_id uuid NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  name VARCHAR NOT NULL UNIQUE CHECK (length(email) < 50),
+  name VARCHAR NOT NULL UNIQUE CHECK (length(name) < 50),
   PRIMARY KEY (id)
 );
 
