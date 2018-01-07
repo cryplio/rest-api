@@ -27,3 +27,21 @@ travis encrypt HEROKU_API_KEY=$(heroku auth:token) --add
 travis encrypt APIARY_API_KEY=your-token --add
 travis encrypt your-email-address
 ```
+
+## Documentation
+
+The documentation is using blueprint and the generated file can be uploaded to apiary
+
+### Install hercule
+
+```
+  yarn global add hercule
+  # OR
+  npm install hercule -g
+```
+
+### Update the documentation
+
+```
+hercule doc/main.apib -o doc.apib
+```
