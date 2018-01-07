@@ -1,0 +1,42 @@
+### List all users [GET]
+
++ Parameters
+    + page: 1 (number,optional) - Page to get
+    + per_page: 100 (number,optional) - Number of element to get
+    + sort: created_at (string,optional) - Field used for sorting the results (created_at, name, featured). Adding a "-" in front of a name will doing a reverse ordering (ex: -created_at). Several fields can be provided using a comma as separator (ex. featured,-name)
+
++ Request (application/json)
+    + Headers
+
+            Authorization: basic [base64encoded userID:access_token]
+
++ Response 200 (application/json)
+
+    The query succeed
+
+    + Attributes (Users)
+
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 401 (application/json)
+
+    The requester is not logged in
+
+    + Attributes (Error401)
+
++ Response 403 (application/json)
+
+    The requester does not have the permission to update this resource
+
+    + Attributes (Error403)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)

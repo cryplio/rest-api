@@ -6,10 +6,10 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/cryplio/rest-api)](https://goreportcard.com/report/github.com/cryplio/rest-api)
 [![codecov](https://codecov.io/gh/cryplio/rest-api/branch/master/graph/badge.svg)](https://codecov.io/gh/cryplio/rest-api)
 
-<!-- ## Staging badges
+## Staging badges
 
 [![Build Status](https://travis-ci.org/cryplio/rest-api.svg?branch=staging)](https://travis-ci.org/cryplio/rest-api)
-[![codecov](https://codecov.io/gh/cryplio/rest-api/branch/staging/graph/badge.svg)](https://codecov.io/gh/cryplio/rest-api) -->
+[![codecov](https://codecov.io/gh/cryplio/rest-api/branch/staging/graph/badge.svg)](https://codecov.io/gh/cryplio/rest-api)
 
 ## Run the API using docker
 

@@ -1,0 +1,25 @@
+### Create a session (sign in) [POST]
+
++ Request (application/json)
+    + Attributes
+        + email (required, string) - Email of the user to login as
+        + password (required, string) - Password of the user to login as
+
++ Response 201 (application/json)
+
+    The resource has been created
+
+    + Attributes (Session)
+
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)
