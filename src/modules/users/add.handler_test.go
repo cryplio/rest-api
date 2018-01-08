@@ -14,6 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/helpers"
+	"github.com/cryplio/rest-api/src/modules/portfolios"
 	"github.com/cryplio/rest-api/src/modules/users"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -79,6 +80,7 @@ func TestAddHappyPath(t *testing.T) {
 	tx, _ := mockDB.EXPECT().TransactionSuccess(mockCtrl)
 	tx.QEXPECT().InsertSuccess(&auth.User{})
 	tx.QEXPECT().InsertSuccess(&users.Profile{})
+	tx.QEXPECT().InsertSuccess(&portfolios.Portfolio{})
 	tx.EXPECT().CommitSuccess()
 	tx.EXPECT().RollbackSuccess()
 
@@ -169,6 +171,40 @@ func TestAddProfileError(t *testing.T) {
 	assert.Equal(t, http.StatusInternalServerError, apiError.HTTPStatus())
 }
 
+func TestAddPortfolioError(t *testing.T) {
+	t.Parallel()
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	handlerParams := &users.AddParams{
+		Name:     "username",
+		Email:    "email@domain.tld",
+		Password: "valid password",
+	}
+
+	// Mock the database & add expectations
+	mockDB := mocksqldb.NewMockConnection(mockCtrl)
+	tx, _ := mockDB.EXPECT().TransactionSuccess(mockCtrl)
+	tx.QEXPECT().InsertSuccess(&auth.User{})
+	tx.QEXPECT().InsertSuccess(&users.Profile{})
+	tx.QEXPECT().InsertError(&portfolios.Portfolio{}, errors.New("could not create portfolio"))
+	tx.EXPECT().RollbackSuccess()
+
+	// Mock the request & add expectations
+	req := mockrouter.NewMockHTTPRequest(mockCtrl)
+	req.EXPECT().Params().Return(handlerParams)
+
+	// call the handler
+	err := users.Add(req, &router.Dependencies{DB: mockDB})
+
+	// Assert everything
+	assert.Error(t, err, "the handler should have fail")
+
+	apiError := apierror.Convert(err)
+	assert.Equal(t, http.StatusInternalServerError, apiError.HTTPStatus())
+}
+
 func TestAddCommitError(t *testing.T) {
 	t.Parallel()
 
@@ -186,6 +222,7 @@ func TestAddCommitError(t *testing.T) {
 	tx, _ := mockDB.EXPECT().TransactionSuccess(mockCtrl)
 	tx.QEXPECT().InsertSuccess(&auth.User{})
 	tx.QEXPECT().InsertSuccess(&users.Profile{})
+	tx.QEXPECT().InsertSuccess(&portfolios.Portfolio{})
 	tx.EXPECT().CommitError()
 	tx.EXPECT().RollbackSuccess()
 

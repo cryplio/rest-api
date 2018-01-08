@@ -7,6 +7,7 @@ import (
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/router/guard"
 	"github.com/Nivl/go-rest-tools/security/auth"
+	"github.com/cryplio/rest-api/src/modules/portfolios"
 )
 
 var addEndpoint = &router.Endpoint{
@@ -55,6 +56,11 @@ func Add(req router.HTTPRequest, deps *router.Dependencies) error {
 	// Create the profile
 	profile := &Profile{User: user, UserID: user.ID}
 	if err := profile.Create(tx); err != nil {
+		return err
+	}
+	// Create the default portfolio
+	portfolio := &portfolios.Portfolio{User: user, UserID: user.ID, Name: "My Portfolio"}
+	if err := portfolio.Create(tx); err != nil {
 		return err
 	}
 
