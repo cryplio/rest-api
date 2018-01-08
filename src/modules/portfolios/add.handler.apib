@@ -1,0 +1,24 @@
+### Add a new portfolio [POST]
+
++ Request (application/json)
+
+    + Attributes
+        + name (required, string) - Name of the new portfolio (maxlen: 50 chars)
+
++ Response 201 (application/json)
+
+    The resource has been created.
+
+    + Attributes (Portfolio)
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)

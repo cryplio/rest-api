@@ -16,10 +16,10 @@ const (
 
 // Endpoints is a list of endpoints for this components
 var Endpoints = router.Endpoints{
-// EndpointAdd: addEndpoint,
-// EndpointUpdate: updateEndpoint,
-// EndpointDelete: deleteEndpoint,
-// EndpointList:   listEndpoint,
+	EndpointAdd: addEndpoint,
+	// EndpointUpdate: updateEndpoint,
+	// EndpointDelete: deleteEndpoint,
+	// EndpointList:   listEndpoint,
 }
 
 // SetRoutes is used to set all the users routes
