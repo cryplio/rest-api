@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 
 	"github.com/Nivl/go-rest-tools/dependencies"
@@ -70,6 +72,13 @@ func TestAdd(t *testing.T) {
 
 					assert.NotEmpty(t, u.ID)
 					assert.Equal(t, tc.params.Email, u.Email)
+
+					// Let's make sure we have a portfolio created
+					var totalPortfolios int
+					stmt := `SELECT COUNT(*) from user_portfolios WHERE user_id=$1`
+					err := dbCon.NamedGet(&totalPortfolios, stmt, u.ID)
+					require.NoError(t, err, "could not get the number of portfolios")
+					assert.Equal(t, 1, totalPortfolios, "1 portfolio should have been created")
 				}
 			})
 		}
