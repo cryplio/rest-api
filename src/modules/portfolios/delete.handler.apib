@@ -1,0 +1,34 @@
+### Delete a portfolio [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: basic [base64encoded userID:access_token]
+
+
++ Response 204 (application/json)
+
+    The resource has been deleted
+
+    + Body
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
+
++ Response 404 (application/json)
+
+    The portfolio does not exist or the requester does not have the permission
+    to access it.
+
+    + Attributes (Error403)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)
