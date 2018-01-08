@@ -10,7 +10,7 @@ import (
 const (
 	EndpointAdd = iota
 	// EndpointUpdate
-	// EndpointDelete
+	EndpointDelete
 	// EndpointList
 )
 
@@ -18,7 +18,7 @@ const (
 var Endpoints = router.Endpoints{
 	EndpointAdd: addEndpoint,
 	// EndpointUpdate: updateEndpoint,
-	// EndpointDelete: deleteEndpoint,
+	EndpointDelete: deleteEndpoint,
 	// EndpointList:   listEndpoint,
 }
 

@@ -26,20 +26,18 @@ func NewPersistedPortfolio(t *testing.T, q sqldb.Queryable, u *auth.User, p *por
 	if p == nil {
 		p = &portfolios.Portfolio{}
 	}
-
-	if u != nil {
-		u = testauth.NewPersistedUser(t, q, nil)
-	}
-
 	if p.Name == "" {
 		p.Name = "My Portfolio"
 	}
 
+	if u == nil {
+		u = testauth.NewPersistedUser(t, q, nil)
+	}
 	p.User = u
 	p.UserID = u.ID
 
 	if err := p.Create(q); err != nil {
-		t.Fatalf("failed to create user: %s", err)
+		t.Fatalf("failed to create portfolio: %s", err)
 	}
 	return p
 }
