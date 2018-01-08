@@ -80,39 +80,6 @@ func TestUpdateValidParams(t *testing.T) {
 				"form": url.Values{},
 			},
 		},
-		{
-			"Should work with a valid phone number",
-			map[string]url.Values{
-				"url": url.Values{
-					"id": []string{"48d0c8b8-d7a3-4855-9d90-29a06ef474b0"},
-				},
-				"form": url.Values{
-					"phone_number": []string{"866-246-6453"},
-				},
-			},
-		},
-		{
-			"Should work with a valid phone number with parenthesis",
-			map[string]url.Values{
-				"url": url.Values{
-					"id": []string{"48d0c8b8-d7a3-4855-9d90-29a06ef474b0"},
-				},
-				"form": url.Values{
-					"phone_number": []string{"(866) 246 6453"},
-				},
-			},
-		},
-		{
-			"Should work with a valid phone number with country code",
-			map[string]url.Values{
-				"url": url.Values{
-					"id": []string{"48d0c8b8-d7a3-4855-9d90-29a06ef474b0"},
-				},
-				"form": url.Values{
-					"phone_number": []string{"+1 (866) 246 6453"},
-				},
-			},
-		},
 	}
 
 	for _, tc := range testCases {
