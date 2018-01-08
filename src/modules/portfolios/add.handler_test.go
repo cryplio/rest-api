@@ -86,7 +86,7 @@ func TestAddHappyPath(t *testing.T) {
 
 	// Mock the response & add expectations
 	res := mockrouter.NewMockHTTPResponse(mockCtrl)
-	res.EXPECT().CreatedSuccess(&portfolios.PortfolioPayload{}, func(p *portfolios.PortfolioPayload) {
+	res.EXPECT().CreatedSuccess(&portfolios.Payload{}, func(p *portfolios.Payload) {
 		assert.Equal(t, handlerParams.Name, p.Name)
 		assert.NotEmpty(t, p.ID)
 	})

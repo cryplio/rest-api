@@ -1,37 +1,37 @@
 package portfolios
 
-// PortfolioPayload represents the information of a portfolio that can be
+// Payload represents the information of a portfolio that can be
 // returned to the user
-type PortfolioPayload struct {
+type Payload struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
 // ExportPublic returns a PortfolioPayload containing only the fields that are safe to
 // be seen by anyone
-func (p *Portfolio) ExportPublic() *PortfolioPayload {
-	return &PortfolioPayload{
+func (p *Portfolio) ExportPublic() *Payload {
+	return &Payload{
 		ID:   p.ID,
 		Name: p.Name,
 	}
 }
 
 // ExportPrivate returns a PortfolioPayload containing all the fields
-func (p *Portfolio) ExportPrivate() *PortfolioPayload {
+func (p *Portfolio) ExportPrivate() *Payload {
 	return p.ExportPublic()
 }
 
-// PortfoliosPayload represents a list of Portfolio that can be
+// ListPayload represents a list of Portfolio that can be
 // safely returned to the clients
-type PortfoliosPayload struct {
-	Results []*PortfolioPayload `json:"results"`
+type ListPayload struct {
+	Results []*Payload `json:"results"`
 }
 
 // ExportPublic returns a ProfilesPayload containing only the fields that are safe to
 // be seen by anyone
-func (p Portfolios) ExportPublic() *PortfoliosPayload {
-	pld := &PortfoliosPayload{}
-	pld.Results = make([]*PortfolioPayload, len(p))
+func (p Portfolios) ExportPublic() *ListPayload {
+	pld := &ListPayload{}
+	pld.Results = make([]*Payload, len(p))
 	for i, p := range p {
 		pld.Results[i] = p.ExportPublic()
 	}
@@ -39,9 +39,9 @@ func (p Portfolios) ExportPublic() *PortfoliosPayload {
 }
 
 // ExportPrivate returns a ProfilesPayload containing all the fields
-func (p Portfolios) ExportPrivate() *PortfoliosPayload {
-	pld := &PortfoliosPayload{}
-	pld.Results = make([]*PortfolioPayload, len(p))
+func (p Portfolios) ExportPrivate() *ListPayload {
+	pld := &ListPayload{}
+	pld.Results = make([]*Payload, len(p))
 	for i, p := range p {
 		pld.Results[i] = p.ExportPrivate()
 	}

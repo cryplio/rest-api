@@ -61,7 +61,7 @@ func TestAdd(t *testing.T) {
 				assert.Equal(t, tc.code, rec.Code)
 
 				if rec.Code == http.StatusCreated {
-					var p portfolios.PortfolioPayload
+					var p portfolios.Payload
 					if err := json.NewDecoder(rec.Body).Decode(&p); err != nil {
 						t.Fatal(err)
 					}
