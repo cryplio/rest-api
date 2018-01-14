@@ -19,19 +19,19 @@ func TestListParamsGetSort(t *testing.T) {
 		{
 			"No fields should return the default sorting",
 			"",
-			"is_featured ASC,created_at ASC",
+			"name ASC,created_at ASC",
 			!shouldFail,
 		},
 		{
 			"Order by ,, should return the default sorting",
 			",,",
-			"is_featured ASC,created_at ASC",
+			"name ASC,created_at ASC",
 			!shouldFail,
 		},
 		{
 			"Order by ,,,,,,, should return the default sorting",
 			",,,,,,,",
-			"is_featured ASC,created_at ASC",
+			"name ASC,created_at ASC",
 			!shouldFail,
 		},
 		{
@@ -47,9 +47,9 @@ func TestListParamsGetSort(t *testing.T) {
 			!shouldFail,
 		},
 		{
-			"Order by is_featured and -name should work",
-			"is_featured,-name",
-			"is_featured ASC,name DESC",
+			"Order by created_at and -name should work",
+			"created_at,-name",
+			"created_at ASC,name DESC",
 			!shouldFail,
 		},
 		{

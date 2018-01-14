@@ -60,9 +60,8 @@ func List(req router.HTTPRequest, deps *router.Dependencies) error {
 
 func listParamsGetSort(sortFields string) (string, error) {
 	sortableField := map[string]bool{
-		"is_featured": true,
-		"created_at":  true,
-		"name":        true,
+		"created_at": true,
+		"name":       true,
 	}
 
 	// We remove all empty sort (ex: "name,,created_at" will be "name,created_at")
@@ -72,7 +71,7 @@ func listParamsGetSort(sortFields string) (string, error) {
 
 	// Set the default ordering if none is provided
 	if sortFields == "" || sortFields == "," {
-		sortFields = "is_featured,created_at"
+		sortFields = "name,created_at"
 	}
 
 	sort := ""
