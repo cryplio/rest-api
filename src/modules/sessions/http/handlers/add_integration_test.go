@@ -1,6 +1,6 @@
 // +build integration
 
-package sessions_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -14,6 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/cryplio/rest-api/src/modules/sessions"
+	"github.com/cryplio/rest-api/src/modules/sessions/http/handlers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,22 +33,22 @@ func TestAdd(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *sessions.AddParams
+		params      *handlers.AddParams
 	}{
 		{
 			"Unexisting email should fail",
 			http.StatusBadRequest,
-			&sessions.AddParams{Email: "invalid@fake.com", Password: "fake"},
+			&handlers.AddParams{Email: "invalid@fake.com", Password: "fake"},
 		},
 		{
 			"Invalid password should fail",
 			http.StatusBadRequest,
-			&sessions.AddParams{Email: u1.Email, Password: "invalid"},
+			&handlers.AddParams{Email: u1.Email, Password: "invalid"},
 		},
 		{
 			"Valid Request should work",
 			http.StatusCreated,
-			&sessions.AddParams{Email: u1.Email, Password: "fake"},
+			&handlers.AddParams{Email: u1.Email, Password: "fake"},
 		},
 	}
 
@@ -75,9 +76,9 @@ func TestAdd(t *testing.T) {
 	})
 }
 
-func callAdd(t *testing.T, params *sessions.AddParams, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callAdd(t *testing.T, params *handlers.AddParams, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: sessions.Endpoints[sessions.EndpointAdd],
+		Endpoint: handlers.Endpoints[handlers.EndpointAdd],
 		Params:   params,
 		Router:   api.GetRouter(deps),
 	}

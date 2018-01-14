@@ -1,4 +1,4 @@
-package sessions_test
+package handlers_test
 
 import (
 	"errors"
@@ -15,6 +15,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/modules/sessions"
+	"github.com/cryplio/rest-api/src/modules/sessions/http/handlers"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,7 +46,7 @@ func TestInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := sessions.Endpoints[sessions.EndpointAdd].Guard
+	g := handlers.Endpoints[handlers.EndpointAdd].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -56,7 +57,7 @@ func TestAddValidData(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.AddParams{
+	handlerParams := &handlers.AddParams{
 		Email:    "email@domain.tld",
 		Password: "valid password",
 	}
@@ -85,7 +86,7 @@ func TestAddValidData(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := sessions.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -97,7 +98,7 @@ func TestAddUnexistingEmail(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.AddParams{
+	handlerParams := &handlers.AddParams{
 		Email:    "email@domain.tld",
 		Password: "valid password",
 	}
@@ -111,7 +112,7 @@ func TestAddUnexistingEmail(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := sessions.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err)
@@ -128,7 +129,7 @@ func TestAddWrongPassword(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.AddParams{
+	handlerParams := &handlers.AddParams{
 		Email:    "email@domain.tld",
 		Password: "invalid password",
 	}
@@ -148,7 +149,7 @@ func TestAddWrongPassword(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := sessions.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err)
@@ -164,7 +165,7 @@ func TestAddNoDbConOnGet(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.AddParams{
+	handlerParams := &handlers.AddParams{
 		Email:    "email@domain.tld",
 		Password: "invalid password",
 	}
@@ -178,7 +179,7 @@ func TestAddNoDbConOnGet(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := sessions.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err)
@@ -194,7 +195,7 @@ func TestAddNoDBConOnSave(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.AddParams{
+	handlerParams := &handlers.AddParams{
 		Email:    "email@domain.tld",
 		Password: "valid password",
 	}
@@ -215,7 +216,7 @@ func TestAddNoDBConOnSave(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := sessions.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

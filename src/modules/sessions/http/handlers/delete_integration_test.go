@@ -1,6 +1,6 @@
 // +build integration
 
-package sessions_test
+package handlers_test
 
 import (
 	"database/sql"
@@ -14,7 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/security/auth/testauth"
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
-	"github.com/cryplio/rest-api/src/modules/sessions"
+	"github.com/cryplio/rest-api/src/modules/sessions/http/handlers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,43 +41,43 @@ func TestDelete(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *sessions.DeleteParams
+		params      *handlers.DeleteParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&sessions.DeleteParams{Token: safeSession.ID},
+			&handlers.DeleteParams{Token: safeSession.ID},
 			nil,
 		},
 		{
 			"Deleting an other user sessions",
 			http.StatusNotFound,
-			&sessions.DeleteParams{Token: safeSession.ID, CurrentPassword: "fake"},
+			&handlers.DeleteParams{Token: safeSession.ID, CurrentPassword: "fake"},
 			httptests.NewRequestAuth(randomSession),
 		},
 		{
 			"Deleting an invalid ID",
 			http.StatusBadRequest,
-			&sessions.DeleteParams{Token: "invalid", CurrentPassword: "fake"},
+			&handlers.DeleteParams{Token: "invalid", CurrentPassword: "fake"},
 			httptests.NewRequestAuth(safeSession),
 		},
 		{
 			"Deleting a different session without providing password",
 			http.StatusUnauthorized,
-			&sessions.DeleteParams{Token: toDelete2.ID},
+			&handlers.DeleteParams{Token: toDelete2.ID},
 			httptests.NewRequestAuth(safeSession),
 		},
 		{
 			"Deleting a different session",
 			http.StatusNoContent,
-			&sessions.DeleteParams{Token: toDelete2.ID, CurrentPassword: "fake"},
+			&handlers.DeleteParams{Token: toDelete2.ID, CurrentPassword: "fake"},
 			httptests.NewRequestAuth(safeSession),
 		},
 		{
 			"Deleting current session",
 			http.StatusNoContent,
-			&sessions.DeleteParams{Token: toDelete3.ID},
+			&handlers.DeleteParams{Token: toDelete3.ID},
 			httptests.NewRequestAuth(toDelete3),
 		},
 	}
@@ -104,9 +104,9 @@ func TestDelete(t *testing.T) {
 	})
 }
 
-func callDelete(t *testing.T, params *sessions.DeleteParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callDelete(t *testing.T, params *handlers.DeleteParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: sessions.Endpoints[sessions.EndpointDelete],
+		Endpoint: handlers.Endpoints[handlers.EndpointDelete],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

@@ -1,4 +1,4 @@
-package sessions_test
+package handlers_test
 
 import (
 	"errors"
@@ -14,7 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/security/auth"
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
-	"github.com/cryplio/rest-api/src/modules/sessions"
+	"github.com/cryplio/rest-api/src/modules/sessions/http/handlers"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -47,7 +47,7 @@ func TestDeleteInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := sessions.Endpoints[sessions.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -74,12 +74,12 @@ func TestDeleteValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := sessions.Endpoints[sessions.EndpointDelete]
+			endpts := handlers.Endpoints[handlers.EndpointDelete]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*sessions.DeleteParams)
+				p := data.(*handlers.DeleteParams)
 				assert.Equal(t, tc.sources["url"].Get("token"), p.Token)
 			}
 		})
@@ -102,7 +102,7 @@ func TestDeleteAccess(t *testing.T) {
 		},
 	}
 
-	g := sessions.Endpoints[sessions.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -115,7 +115,7 @@ func TestDeleteHappyPath(t *testing.T) {
 
 	user := &auth.User{ID: "3e916798-a090-4f22-b1d1-04a63fbed6ef"}
 	session := &auth.Session{ID: "3642e0e6-788e-4161-92dd-6c52ea823da9", UserID: user.ID}
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token: session.ID,
 	}
 
@@ -140,7 +140,7 @@ func TestDeleteHappyPath(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err := sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -153,7 +153,7 @@ func TestDeleteOtherSession(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token:           "d1ba3e60-d674-47f0-9694-59fbda0fc659",
 		CurrentPassword: "valid password",
 	}
@@ -187,7 +187,7 @@ func TestDeleteOtherSession(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err = sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err = handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -200,7 +200,7 @@ func TestDeleteOtherSessionWrongPassword(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token:           "d1ba3e60-d674-47f0-9694-59fbda0fc659",
 		CurrentPassword: "invalid password",
 	}
@@ -220,7 +220,7 @@ func TestDeleteOtherSessionWrongPassword(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err = sessions.Delete(req, &router.Dependencies{DB: nil})
+	err = handlers.Delete(req, &router.Dependencies{DB: nil})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should not have fail")
@@ -234,7 +234,7 @@ func TestDeleteSomeonesSession(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token:           "d1ba3e60-d674-47f0-9694-59fbda0fc659",
 		CurrentPassword: "valid password",
 	}
@@ -261,7 +261,7 @@ func TestDeleteSomeonesSession(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err = sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err = handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should not have fail")
@@ -275,7 +275,7 @@ func TestDeleteUnexistingSession(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token:           "d1ba3e60-d674-47f0-9694-59fbda0fc659",
 		CurrentPassword: "valid password",
 	}
@@ -299,7 +299,7 @@ func TestDeleteUnexistingSession(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err = sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err = handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should not have fail")
@@ -315,7 +315,7 @@ func TestDeleteNoDBConOnDelete(t *testing.T) {
 	user := &auth.User{ID: "3e916798-a090-4f22-b1d1-04a63fbed6ef"}
 	session := &auth.Session{ID: "3642e0e6-788e-4161-92dd-6c52ea823da9", UserID: user.ID}
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token: session.ID,
 	}
 
@@ -335,7 +335,7 @@ func TestDeleteNoDBConOnDelete(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err := sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -353,7 +353,7 @@ func TestDeleteNoDBConOnGet(t *testing.T) {
 	user := &auth.User{ID: "3e916798-a090-4f22-b1d1-04a63fbed6ef"}
 	session := &auth.Session{ID: "3642e0e6-788e-4161-92dd-6c52ea823da9", UserID: user.ID}
 
-	handlerParams := &sessions.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		Token: session.ID,
 	}
 
@@ -367,7 +367,7 @@ func TestDeleteNoDBConOnGet(t *testing.T) {
 	req.EXPECT().Session().Return(session)
 
 	// call the handler
-	err := sessions.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
