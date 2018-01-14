@@ -1,6 +1,6 @@
 // +build integration
 
-package users_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -13,6 +13,7 @@ import (
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,37 +34,37 @@ func TestGet(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *users.GetParams
+		params      *handlers.GetParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusOK,
-			&users.GetParams{ID: u1.ID},
+			&handlers.GetParams{ID: u1.ID},
 			nil,
 		},
 		{
 			"Getting an other user",
 			http.StatusOK,
-			&users.GetParams{ID: u1.ID},
+			&handlers.GetParams{ID: u1.ID},
 			httptests.NewRequestAuth(s2),
 		},
 		{
 			"Getting own data",
 			http.StatusOK,
-			&users.GetParams{ID: u1.ID},
+			&handlers.GetParams{ID: u1.ID},
 			httptests.NewRequestAuth(s1),
 		},
 		{
 			"Getting un-existing user with valid ID",
 			http.StatusNotFound,
-			&users.GetParams{ID: "f76700e7-988c-4ae9-9f02-ac3f9d7cd88e"},
+			&handlers.GetParams{ID: "f76700e7-988c-4ae9-9f02-ac3f9d7cd88e"},
 			nil,
 		},
 		{
 			"Getting un-existing user with invalid ID",
 			http.StatusBadRequest,
-			&users.GetParams{ID: "invalidID"},
+			&handlers.GetParams{ID: "invalidID"},
 			nil,
 		},
 	}
@@ -98,9 +99,9 @@ func TestGet(t *testing.T) {
 	})
 }
 
-func callGet(t *testing.T, params *users.GetParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callGet(t *testing.T, params *handlers.GetParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: users.Endpoints[users.EndpointGet],
+		Endpoint: handlers.Endpoints[handlers.EndpointGet],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

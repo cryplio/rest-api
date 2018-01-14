@@ -1,6 +1,6 @@
 // +build integration
 
-package users_test
+package handlers_test
 
 import (
 	"os"
@@ -28,5 +28,5 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	migrationFolder = path.Join(wd, "..", "..", "..", "db", "migrations")
+	migrationFolder = path.Join(wd, "..", "..", "..", "..", "..", "db", "migrations")
 }

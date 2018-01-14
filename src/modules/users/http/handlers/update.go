@@ -1,10 +1,11 @@
-package users
+package handlers
 
 import (
 	"net/http"
 
 	"github.com/Nivl/go-hasher"
 	"github.com/Nivl/go-hasher/implementations/bcrypt"
+	"github.com/cryplio/rest-api/src/modules/users"
 
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/router/guard"
@@ -42,7 +43,7 @@ func Update(req router.HTTPRequest, deps *router.Dependencies) error {
 	}
 
 	// Retreive the user and the attached profile
-	profile, err := GetByIDWithProfile(deps.DB, params.ID)
+	profile, err := users.GetByIDWithProfile(deps.DB, params.ID)
 	if err != nil {
 		return err
 	}
@@ -81,7 +82,7 @@ func Update(req router.HTTPRequest, deps *router.Dependencies) error {
 	return req.Response().Ok(profile.ExportPrivate())
 }
 
-func updateCopyData(profile *Profile, params *UpdateParams, hashr hasher.Hasher) error {
+func updateCopyData(profile *users.Profile, params *UpdateParams, hashr hasher.Hasher) error {
 	// Update the User Object
 	if params.Name != "" {
 		profile.User.Name = params.Name

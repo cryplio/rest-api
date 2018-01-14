@@ -1,6 +1,6 @@
 // +build integration
 
-package users_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -15,6 +15,7 @@ import (
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	"github.com/stretchr/testify/assert"
 )
@@ -35,43 +36,43 @@ func TestUpdate(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *users.UpdateParams
+		params      *handlers.UpdateParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&users.UpdateParams{ID: u1.ID},
+			&handlers.UpdateParams{ID: u1.ID},
 			nil,
 		},
 		{
 			"Updating an other user",
 			http.StatusForbidden,
-			&users.UpdateParams{ID: u1.ID},
+			&handlers.UpdateParams{ID: u1.ID},
 			httptests.NewRequestAuth(s2),
 		},
 		{
 			"Updating email without providing password",
 			http.StatusUnauthorized,
-			&users.UpdateParams{ID: u1.ID, Email: "melvin@fake.io"},
+			&handlers.UpdateParams{ID: u1.ID, Email: "melvin@fake.io"},
 			httptests.NewRequestAuth(s1),
 		},
 		{
 			"Updating password without providing current Password",
 			http.StatusUnauthorized,
-			&users.UpdateParams{ID: u1.ID, NewPassword: "TestUpdateUser"},
+			&handlers.UpdateParams{ID: u1.ID, NewPassword: "TestUpdateUser"},
 			httptests.NewRequestAuth(s1),
 		},
 		{
 			"Updating email to a used one",
 			http.StatusConflict,
-			&users.UpdateParams{ID: u1.ID, CurrentPassword: "fake", Email: u2.Email},
+			&handlers.UpdateParams{ID: u1.ID, CurrentPassword: "fake", Email: u2.Email},
 			httptests.NewRequestAuth(s1),
 		},
 		{
 			"Updating password",
 			http.StatusOK,
-			&users.UpdateParams{ID: u2.ID, CurrentPassword: "fake", NewPassword: "TestUpdateUser"},
+			&handlers.UpdateParams{ID: u2.ID, CurrentPassword: "fake", NewPassword: "TestUpdateUser"},
 			httptests.NewRequestAuth(s2),
 		},
 	}
@@ -117,9 +118,9 @@ func TestUpdate(t *testing.T) {
 	})
 }
 
-func callUpdate(t *testing.T, params *users.UpdateParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callUpdate(t *testing.T, params *handlers.UpdateParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: users.Endpoints[users.EndpointUpdate],
+		Endpoint: handlers.Endpoints[handlers.EndpointUpdate],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

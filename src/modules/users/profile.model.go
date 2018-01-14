@@ -39,19 +39,3 @@ func GetByIDWithProfile(q sqldb.Queryable, id string) (*Profile, error) {
 	err := q.Get(u, stmt, id)
 	return u, apierror.NewFromSQL(err)
 }
-
-// GetFeaturedProfile finds and returns the featured user
-// Deleted object are not returned
-func GetFeaturedProfile(q sqldb.Queryable) (*Profile, error) {
-	u := &Profile{}
-	stmt := `
-	SELECT profile.*, ` + auth.JoinUserSQL("users") + `
-	FROM user_profiles profile
-	JOIN users
-	  ON users.id = profile.user_id
-	WHERE profile.is_featured IS true
-	  AND users.deleted_at IS NULL
-	LIMIT 1`
-	err := q.Get(u, stmt)
-	return u, apierror.NewFromSQL(err)
-}

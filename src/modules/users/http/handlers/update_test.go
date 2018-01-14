@@ -1,4 +1,4 @@
-package users_test
+package handlers_test
 
 import (
 	"errors"
@@ -16,6 +16,7 @@ import (
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/helpers"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -60,7 +61,7 @@ func TestUpdateInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointUpdate].Guard
+	g := handlers.Endpoints[handlers.EndpointUpdate].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -87,12 +88,12 @@ func TestUpdateValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := users.Endpoints[users.EndpointUpdate]
+			endpts := handlers.Endpoints[handlers.EndpointUpdate]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*users.UpdateParams)
+				p := data.(*handlers.UpdateParams)
 				assert.Equal(t, tc.sources["url"].Get("id"), p.ID)
 			}
 		})
@@ -115,7 +116,7 @@ func TestUpdateAccess(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointUpdate].Guard
+	g := handlers.Endpoints[handlers.EndpointUpdate].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -126,7 +127,7 @@ func TestUpdateHappyPath(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.User.ID,
 		CurrentPassword: "fake",
 		Email:           "new_email@domain.tld",
@@ -158,7 +159,7 @@ func TestUpdateHappyPath(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -171,7 +172,7 @@ func TestUpdateInvalidPassword(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.UserID,
 		CurrentPassword: "invalid password",
 		NewPassword:     "new password",
@@ -189,7 +190,7 @@ func TestUpdateInvalidPassword(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -205,7 +206,7 @@ func TestUpdateInvalidUser(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 		CurrentPassword: "valid password",
 	}
@@ -223,7 +224,7 @@ func TestUpdateInvalidUser(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err = users.Update(req, &router.Dependencies{})
+	err = handlers.Update(req, &router.Dependencies{})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should not have fail")
@@ -238,7 +239,7 @@ func TestUpdateUnexistingUser(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 	requester := &auth.User{
@@ -256,7 +257,7 @@ func TestUpdateUnexistingUser(t *testing.T) {
 	req.EXPECT().User().Return(requester)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -272,7 +273,7 @@ func TestUpdateAllTheFields(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.User.ID,
 		CurrentPassword: "fake",
 		Email:           "new_email@domain.tld",
@@ -304,7 +305,7 @@ func TestUpdateAllTheFields(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -317,7 +318,7 @@ func TestUpdateTransactionError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.UserID,
 		CurrentPassword: "fake",
 		NewPassword:     "new password",
@@ -336,7 +337,7 @@ func TestUpdateTransactionError(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -352,7 +353,7 @@ func TestUpdateConflict(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.UserID,
 		CurrentPassword: "fake",
 		Name:            "new Name",
@@ -374,7 +375,7 @@ func TestUpdateConflict(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -391,7 +392,7 @@ func TestUpdateProfileError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.UserID,
 		CurrentPassword: "fake",
 		Name:            "new Name",
@@ -414,7 +415,7 @@ func TestUpdateProfileError(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -430,7 +431,7 @@ func TestUpdateCommitError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	profile := testusers.NewProfile()
-	handlerParams := &users.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:              profile.UserID,
 		CurrentPassword: "fake",
 		Name:            "new Name",
@@ -454,7 +455,7 @@ func TestUpdateCommitError(t *testing.T) {
 	req.EXPECT().User().Return(profile.User)
 
 	// call the handler
-	err := users.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

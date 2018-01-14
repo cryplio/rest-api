@@ -1,4 +1,4 @@
-package users_test
+package handlers_test
 
 import (
 	"errors"
@@ -14,7 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/security/auth"
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
-	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -73,7 +73,7 @@ func TestDeleteInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -102,12 +102,12 @@ func TestDeleteValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := users.Endpoints[users.EndpointDelete]
+			endpts := handlers.Endpoints[handlers.EndpointDelete]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*users.DeleteParams)
+				p := data.(*handlers.DeleteParams)
 				assert.Equal(t, tc.sources["url"].Get("id"), p.ID)
 				assert.Equal(t, tc.sources["form"].Get("current_password"), p.CurrentPassword)
 			}
@@ -132,7 +132,7 @@ func TestDeleteAccess(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -143,7 +143,7 @@ func TestDeleteHappyPath(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID:              "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 		CurrentPassword: "valid password",
 	}
@@ -170,7 +170,7 @@ func TestDeleteHappyPath(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err = users.Delete(req, &router.Dependencies{DB: mockDB})
+	err = handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -183,7 +183,7 @@ func TestDeleteInvalidPassword(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID:              "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 		CurrentPassword: "invalid password",
 	}
@@ -201,7 +201,7 @@ func TestDeleteInvalidPassword(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err = users.Delete(req, &router.Dependencies{DB: nil})
+	err = handlers.Delete(req, &router.Dependencies{DB: nil})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should not have fail")
@@ -217,7 +217,7 @@ func TestDeleteInvalidUser(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID:              "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 		CurrentPassword: "valid password",
 	}
@@ -236,7 +236,7 @@ func TestDeleteInvalidUser(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err = users.Delete(req, &router.Dependencies{DB: nil})
+	err = handlers.Delete(req, &router.Dependencies{DB: nil})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -252,7 +252,7 @@ func TestDeleteNoDBConOnDelete(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID:              "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 		CurrentPassword: "valid password",
 	}
@@ -274,7 +274,7 @@ func TestDeleteNoDBConOnDelete(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err = users.Delete(req, &router.Dependencies{DB: mockDB})
+	err = handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

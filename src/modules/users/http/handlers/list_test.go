@@ -1,4 +1,4 @@
-package users_test
+package handlers_test
 
 import (
 	"errors"
@@ -14,6 +14,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -56,7 +57,7 @@ func TestListInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointList].Guard
+	g := handlers.Endpoints[handlers.EndpointList].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -80,7 +81,7 @@ func TestListValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := users.Endpoints[users.EndpointList]
+			endpts := handlers.Endpoints[handlers.EndpointList]
 			_, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 		})
@@ -108,7 +109,7 @@ func TestListAccess(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointList].Guard
+	g := handlers.Endpoints[handlers.EndpointList].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -124,10 +125,10 @@ func TestListNoBDCon(t *testing.T) {
 
 	// Mock the request & add expectations
 	req := mockrouter.NewMockHTTPRequest(mockCtrl)
-	req.EXPECT().Params().Return(&users.ListParams{})
+	req.EXPECT().Params().Return(&handlers.ListParams{})
 
 	// call the handler
-	err := users.List(req, &router.Dependencies{DB: mockDB})
+	err := handlers.List(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -144,10 +145,10 @@ func TestListInvalidSort(t *testing.T) {
 
 	// Mock the request & add expectations
 	req := mockrouter.NewMockHTTPRequest(mockCtrl)
-	req.EXPECT().Params().Return(&users.ListParams{Sort: "not_a_field"})
+	req.EXPECT().Params().Return(&handlers.ListParams{Sort: "not_a_field"})
 
 	// call the handler
-	err := users.List(req, &router.Dependencies{DB: nil})
+	err := handlers.List(req, &router.Dependencies{DB: nil})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -183,11 +184,11 @@ func TestListPrivacy(t *testing.T) {
 
 	// Mock the request & add expectations
 	req := mockrouter.NewMockHTTPRequest(mockCtrl)
-	req.EXPECT().Params().Return(&users.ListParams{})
+	req.EXPECT().Params().Return(&handlers.ListParams{})
 	req.EXPECT().Response().Return(res)
 
 	// call the handler
-	err := users.List(req, &router.Dependencies{DB: mockDB})
+	err := handlers.List(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
