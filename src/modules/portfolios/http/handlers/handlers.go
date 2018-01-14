@@ -11,7 +11,7 @@ const (
 	EndpointAdd = iota
 	EndpointUpdate
 	EndpointDelete
-	// EndpointList
+	EndpointList
 )
 
 // Endpoints is a list of endpoints for this components
@@ -19,7 +19,7 @@ var Endpoints = router.Endpoints{
 	EndpointAdd:    addEndpoint,
 	EndpointUpdate: updateEndpoint,
 	EndpointDelete: deleteEndpoint,
-	// EndpointList:   listEndpoint,
+	EndpointList:   listEndpoint,
 }
 
 // SetRoutes is used to set all the users routes
