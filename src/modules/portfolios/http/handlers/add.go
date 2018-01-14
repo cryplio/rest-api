@@ -1,12 +1,14 @@
-package portfolios
+package handlers
 
 import (
 	"net/http"
 
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/router/guard"
+	"github.com/cryplio/rest-api/src/modules/portfolios"
 )
 
+// addEndpoint represent the endpoint data for the Add handler
 var addEndpoint = &router.Endpoint{
 	Verb:    http.MethodPost,
 	Path:    "/portfolios",
@@ -26,15 +28,15 @@ type AddParams struct {
 func Add(req router.HTTPRequest, deps *router.Dependencies) error {
 	params := req.Params().(*AddParams)
 
-	portfolio := &Portfolio{
+	p := &portfolios.Portfolio{
 		Name:   params.Name,
 		UserID: req.User().ID,
 		User:   req.User(),
 	}
 
-	if err := portfolio.Create(deps.DB); err != nil {
+	if err := p.Create(deps.DB); err != nil {
 		return err
 	}
 
-	return req.Response().Created(portfolio.ExportPublic())
+	return req.Response().Created(p.ExportPublic())
 }
