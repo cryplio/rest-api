@@ -1,6 +1,6 @@
 // +build integration
 
-package portfolios_test
+package handlers_test
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/cryplio/rest-api/src/modules/api"
-	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/portfolios/testportfolios"
 
 	"github.com/Nivl/go-rest-tools/dependencies"
@@ -39,31 +39,31 @@ func TestDelete(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *portfolios.DeleteParams
+		params      *handlers.DeleteParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&portfolios.DeleteParams{ID: portfolioOfU1ToKeep.ID},
+			&handlers.DeleteParams{ID: portfolioOfU1ToKeep.ID},
 			nil,
 		},
 		{
 			"Deleting a porfolio that does not exist",
 			http.StatusNotFound,
-			&portfolios.DeleteParams{ID: portfolioOfU1ToKeep.ID},
+			&handlers.DeleteParams{ID: portfolioOfU1ToKeep.ID},
 			httptests.NewRequestAuth(s2),
 		},
 		{
 			"Deleting the porfolio of an other user",
 			http.StatusNotFound,
-			&portfolios.DeleteParams{ID: "37dc1575-a296-48f5-8345-99e0649959c9"},
+			&handlers.DeleteParams{ID: "37dc1575-a296-48f5-8345-99e0649959c9"},
 			httptests.NewRequestAuth(s2),
 		},
 		{
 			"Deleting a portfolio",
 			http.StatusNoContent,
-			&portfolios.DeleteParams{ID: portfolioOfU1ToDelete.ID},
+			&handlers.DeleteParams{ID: portfolioOfU1ToDelete.ID},
 			httptests.NewRequestAuth(s1),
 		},
 	}
@@ -90,9 +90,9 @@ func TestDelete(t *testing.T) {
 	})
 }
 
-func callDelete(t *testing.T, params *portfolios.DeleteParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callDelete(t *testing.T, params *handlers.DeleteParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: portfolios.Endpoints[portfolios.EndpointDelete],
+		Endpoint: handlers.Endpoints[handlers.EndpointDelete],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

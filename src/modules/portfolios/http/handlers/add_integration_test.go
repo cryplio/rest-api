@@ -1,6 +1,6 @@
 // +build integration
 
-package portfolios_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 
 	"github.com/Nivl/go-rest-tools/dependencies"
 	"github.com/Nivl/go-rest-tools/network/http/httptests"
@@ -33,19 +34,19 @@ func TestAdd(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *portfolios.AddParams
+		params      *handlers.AddParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&portfolios.AddParams{Name: "My portfolio"},
+			&handlers.AddParams{Name: "My portfolio"},
 			nil,
 		},
 		{
 			"It should add a new portfolio",
 			http.StatusCreated,
-			&portfolios.AddParams{Name: "My portfolio"},
+			&handlers.AddParams{Name: "My portfolio"},
 			httptests.NewRequestAuth(userSession),
 		},
 	}
@@ -74,9 +75,9 @@ func TestAdd(t *testing.T) {
 	})
 }
 
-func callHandlerAdd(t *testing.T, params *portfolios.AddParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callHandlerAdd(t *testing.T, params *handlers.AddParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: portfolios.Endpoints[portfolios.EndpointAdd],
+		Endpoint: handlers.Endpoints[handlers.EndpointAdd],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),
