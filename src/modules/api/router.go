@@ -6,7 +6,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/cryplio/rest-api/src/modules/portfolios"
 	"github.com/cryplio/rest-api/src/modules/sessions"
-	"github.com/cryplio/rest-api/src/modules/users"
+	users "github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/gorilla/mux"
 )
 

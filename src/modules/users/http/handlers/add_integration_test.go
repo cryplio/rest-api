@@ -1,6 +1,6 @@
 // +build integration
 
-package users_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -10,6 +10,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 
 	"github.com/Nivl/go-rest-tools/dependencies"
@@ -35,22 +36,22 @@ func TestAdd(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *users.AddParams
+		params      *handlers.AddParams
 	}{
 		{
 			"It should fail to add an empty user",
 			http.StatusBadRequest,
-			&users.AddParams{},
+			&handlers.AddParams{},
 		},
 		{
 			"It should add a valid user",
 			http.StatusCreated,
-			&users.AddParams{Name: "Name", Email: "email+TestAdd@fake.com", Password: "password"},
+			&handlers.AddParams{Name: "Name", Email: "email+TestAdd@fake.com", Password: "password"},
 		},
 		{
 			"It should fail adding a user with an email already taken",
 			http.StatusConflict,
-			&users.AddParams{Name: "Name", Email: existingUser.User.Email, Password: "password"},
+			&handlers.AddParams{Name: "Name", Email: existingUser.User.Email, Password: "password"},
 		},
 	}
 
@@ -85,9 +86,9 @@ func TestAdd(t *testing.T) {
 	})
 }
 
-func callHandlerAdd(t *testing.T, params *users.AddParams, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callHandlerAdd(t *testing.T, params *handlers.AddParams, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: users.Endpoints[users.EndpointAdd],
+		Endpoint: handlers.Endpoints[handlers.EndpointAdd],
 		Params:   params,
 		Router:   api.GetRouter(deps),
 	}

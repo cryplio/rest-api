@@ -1,4 +1,4 @@
-package users_test
+package handlers_test
 
 import (
 	"net/http"
@@ -13,6 +13,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -42,7 +43,7 @@ func TestGetInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointGet].Guard
+	g := handlers.Endpoints[handlers.EndpointGet].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -68,12 +69,12 @@ func TestGetValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := users.Endpoints[users.EndpointGet]
+			endpts := handlers.Endpoints[handlers.EndpointGet]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*users.GetParams)
+				p := data.(*handlers.GetParams)
 				assert.Equal(t, tc.sources["url"].Get("id"), p.ID)
 			}
 		})
@@ -87,7 +88,7 @@ func TestGetOthersData(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	userToGet := testusers.NewProfile()
-	handlerParams := &users.GetParams{
+	handlerParams := &handlers.GetParams{
 		ID: userToGet.ID,
 	}
 	requester := &auth.User{
@@ -116,9 +117,7 @@ func TestGetOthersData(t *testing.T) {
 	req.EXPECT().User().Return(requester).Times(2)
 
 	// call the handler
-	err := users.Get(req, &router.Dependencies{DB: mockDB})
-
-	// Assert everything
+	err := handlers.Get(req, &router.Dependencies{DB: mockDB})
 	assert.NoError(t, err, "the handler should not have fail")
 }
 
@@ -128,7 +127,7 @@ func TestGetOwnData(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.GetParams{
+	handlerParams := &handlers.GetParams{
 		ID: "0c2f0713-3f9b-4657-9cdd-2b4ed1f214e9",
 	}
 	requester := &auth.User{
@@ -162,7 +161,7 @@ func TestGetOwnData(t *testing.T) {
 	req.EXPECT().User().Return(requester).Times(2)
 
 	// call the handler
-	err := users.Get(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Get(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.NoError(t, err, "the handler should not have fail")
@@ -174,7 +173,7 @@ func TestGetUnexistingUser(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.GetParams{
+	handlerParams := &handlers.GetParams{
 		ID: "0c2f0713-3f9b-4657-9cdd-2b4ed1f214e9",
 	}
 
@@ -187,7 +186,7 @@ func TestGetUnexistingUser(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Get(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Get(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

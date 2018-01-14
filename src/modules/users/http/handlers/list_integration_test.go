@@ -1,6 +1,6 @@
 // +build integration
 
-package users_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -20,6 +20,7 @@ import (
 	"github.com/Nivl/go-types/datetime"
 	"github.com/cryplio/rest-api/src/modules/api"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	"github.com/stretchr/testify/assert"
 )
@@ -49,12 +50,12 @@ func TestIntegrationListPagination(t *testing.T) {
 	tests := []struct {
 		description   string
 		expectedTotal int
-		params        *users.ListParams
+		params        *handlers.ListParams
 	}{
 		{
 			"100 per page",
 			35,
-			&users.ListParams{
+			&handlers.ListParams{
 				HandlerParams: paginator.HandlerParams{
 					Page:    1,
 					PerPage: 100,
@@ -64,7 +65,7 @@ func TestIntegrationListPagination(t *testing.T) {
 		{
 			"10 per page, page 1",
 			10,
-			&users.ListParams{
+			&handlers.ListParams{
 				HandlerParams: paginator.HandlerParams{
 					Page:    1,
 					PerPage: 10,
@@ -74,7 +75,7 @@ func TestIntegrationListPagination(t *testing.T) {
 		{
 			"10 per page, page 4",
 			5,
-			&users.ListParams{
+			&handlers.ListParams{
 				HandlerParams: paginator.HandlerParams{
 					Page:    4,
 					PerPage: 10,
@@ -135,7 +136,7 @@ func TestIntegrationListSorting(t *testing.T) {
 	adminAuth := httptests.NewRequestAuth(admSession)
 
 	// We set the default params manually otherwise it will send 0
-	params := &users.ListParams{
+	params := &handlers.ListParams{
 		HandlerParams: paginator.HandlerParams{
 			Page:    1,
 			PerPage: 100,
@@ -164,9 +165,9 @@ func TestIntegrationListSorting(t *testing.T) {
 	}
 }
 
-func callList(t *testing.T, params *users.ListParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callList(t *testing.T, params *handlers.ListParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: users.Endpoints[users.EndpointList],
+		Endpoint: handlers.Endpoints[handlers.EndpointList],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

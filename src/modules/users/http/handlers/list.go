@@ -1,4 +1,4 @@
-package users
+package handlers
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Nivl/go-rest-tools/types/apierror"
+	"github.com/cryplio/rest-api/src/modules/users"
 
 	"github.com/Nivl/go-rest-tools/paginator"
 	"github.com/Nivl/go-rest-tools/router"
@@ -49,7 +50,7 @@ func List(req router.HTTPRequest, deps *router.Dependencies) error {
 	OFFSET $1 LIMIT $2`
 	stmt = fmt.Sprintf(stmt, sort)
 
-	profiles := Profiles{}
+	profiles := users.Profiles{}
 	err = deps.DB.Select(&profiles, stmt, paginator.Offset(), paginator.Limit())
 	if err != nil {
 		return err

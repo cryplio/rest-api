@@ -1,10 +1,11 @@
-package users
+package handlers
 
 import (
 	"net/http"
 
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/router/guard"
+	"github.com/cryplio/rest-api/src/modules/users"
 )
 
 var getEndpoint = &router.Endpoint{
@@ -25,12 +26,12 @@ type GetParams struct {
 func Get(req router.HTTPRequest, deps *router.Dependencies) error {
 	params := req.Params().(*GetParams)
 
-	profile, err := GetByIDWithProfile(deps.DB, params.ID)
+	profile, err := users.GetByIDWithProfile(deps.DB, params.ID)
 	if err != nil {
 		return err
 	}
 
-	var pld *ProfilePayload
+	var pld *users.ProfilePayload
 
 	if req.User() != nil && req.User().ID == params.ID {
 		pld = profile.ExportPrivate()

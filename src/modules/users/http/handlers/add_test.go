@@ -1,4 +1,4 @@
-package users_test
+package handlers_test
 
 import (
 	"errors"
@@ -16,6 +16,7 @@ import (
 	"github.com/cryplio/rest-api/src/helpers"
 	"github.com/cryplio/rest-api/src/modules/portfolios"
 	"github.com/cryplio/rest-api/src/modules/users"
+	"github.com/cryplio/rest-api/src/modules/users/http/handlers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -59,7 +60,7 @@ func TestInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := users.Endpoints[users.EndpointAdd].Guard
+	g := handlers.Endpoints[handlers.EndpointAdd].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -69,7 +70,7 @@ func TestAddHappyPath(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -99,9 +100,7 @@ func TestAddHappyPath(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
-
-	// Assert everything
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 	assert.Nil(t, err, "the handler should not have fail")
 }
 
@@ -111,7 +110,7 @@ func TestAddConflict(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -128,7 +127,7 @@ func TestAddConflict(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -144,7 +143,7 @@ func TestAddProfileError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -162,7 +161,7 @@ func TestAddProfileError(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -177,7 +176,7 @@ func TestAddPortfolioError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -196,7 +195,7 @@ func TestAddPortfolioError(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -211,7 +210,7 @@ func TestAddCommitError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -231,7 +230,7 @@ func TestAddCommitError(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -246,7 +245,7 @@ func TestAddTransactionError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &users.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name:     "username",
 		Email:    "email@domain.tld",
 		Password: "valid password",
@@ -261,7 +260,7 @@ func TestAddTransactionError(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := users.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

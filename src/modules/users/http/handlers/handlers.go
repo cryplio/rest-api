@@ -1,4 +1,4 @@
-package users
+package handlers
 
 import (
 	"github.com/Nivl/go-rest-tools/dependencies"
