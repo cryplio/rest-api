@@ -1,0 +1,40 @@
+### Update a porfolio [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: basic [base64encoded userID:access_token]
+
+    + Attributes
+        + name (string) - New Name to use
+
++ Response 200 (application/json)
+
+    The resource has been updated.
+
+    + Attributes (Porfolio)
+
++ Response 400 (application/json)
+
+    A value is missing or contains the wrong data.
+
+    + Attributes (DefaultError)
+
++ Response 401 (application/json)
+
+    The requester is not logged in.
+
+    + Attributes (Error401)
+
++ Response 404 (application/json)
+
+    The resource does not exists or the requester does not have the permission to update this resource
+
+    + Attributes (Error404)
+
++ Response 500 (application/json)
+
+    The server experenced an internal error.
+
+    + Attributes (Error500)
