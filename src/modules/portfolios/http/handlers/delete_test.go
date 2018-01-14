@@ -1,4 +1,4 @@
-package portfolios_test
+package handlers_test
 
 import (
 	"errors"
@@ -16,6 +16,7 @@ import (
 	"github.com/Nivl/go-rest-tools/security/auth"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,7 +46,7 @@ func TestDeleteInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -71,12 +72,12 @@ func TestDeleteValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := portfolios.Endpoints[portfolios.EndpointDelete]
+			endpts := handlers.Endpoints[handlers.EndpointDelete]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*portfolios.DeleteParams)
+				p := data.(*handlers.DeleteParams)
 				assert.Equal(t, tc.sources["url"].Get("id"), p.ID)
 			}
 		})
@@ -99,7 +100,7 @@ func TestDeleteAccess(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointDelete].Guard
+	g := handlers.Endpoints[handlers.EndpointDelete].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -110,7 +111,7 @@ func TestDeleteHappyPath(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	user := testauth.NewUser()
-	handlerParams := &portfolios.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 
@@ -133,7 +134,7 @@ func TestDeleteHappyPath(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err := portfolios.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 	assert.NoError(t, err, "the handler should not have fail")
 }
 
@@ -144,7 +145,7 @@ func TestDeleteDeletionError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	user := testauth.NewUser()
-	handlerParams := &portfolios.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 
@@ -162,7 +163,7 @@ func TestDeleteDeletionError(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err := portfolios.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -177,7 +178,7 @@ func TestDeleteGetPortfolioError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &portfolios.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 
@@ -190,7 +191,7 @@ func TestDeleteGetPortfolioError(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := portfolios.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -205,7 +206,7 @@ func TestDeleteGetPortfolioNotFound(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &portfolios.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 
@@ -218,7 +219,7 @@ func TestDeleteGetPortfolioNotFound(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := portfolios.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")
@@ -234,7 +235,7 @@ func TestDeleteSomeonesPortfolio(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	user := testauth.NewUser()
-	handlerParams := &portfolios.DeleteParams{
+	handlerParams := &handlers.DeleteParams{
 		ID: "48d0c8b8-d7a3-4855-9d90-29a06ef474b0",
 	}
 
@@ -252,7 +253,7 @@ func TestDeleteSomeonesPortfolio(t *testing.T) {
 	req.EXPECT().User().Return(user)
 
 	// call the handler
-	err := portfolios.Delete(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Delete(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

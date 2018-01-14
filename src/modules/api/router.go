@@ -4,7 +4,7 @@ import (
 	"github.com/Nivl/go-rest-tools/dependencies"
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/types/apierror"
-	"github.com/cryplio/rest-api/src/modules/portfolios"
+	portfolios "github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/sessions"
 	"github.com/cryplio/rest-api/src/modules/users"
 	"github.com/gorilla/mux"

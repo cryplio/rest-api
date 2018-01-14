@@ -1,6 +1,6 @@
 // +build integration
 
-package portfolios_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/portfolios/testportfolios"
 
 	"github.com/Nivl/go-rest-tools/dependencies"
@@ -36,31 +37,31 @@ func TestIntegrationUpdate(t *testing.T) {
 	tests := []struct {
 		description string
 		code        int
-		params      *portfolios.UpdateParams
+		params      *handlers.UpdateParams
 		auth        *httptests.RequestAuth
 	}{
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&portfolios.UpdateParams{ID: toUpdate.ID},
+			&handlers.UpdateParams{ID: toUpdate.ID},
 			nil,
 		},
 		{
 			"Updating someone's portfolio",
 			http.StatusNotFound,
-			&portfolios.UpdateParams{ID: toUpdate.ID, Name: "should not change"},
+			&handlers.UpdateParams{ID: toUpdate.ID, Name: "should not change"},
 			httptests.NewRequestAuth(s2),
 		},
 		{
 			"Updating portfolio",
 			http.StatusOK,
-			&portfolios.UpdateParams{ID: toUpdate.ID, Name: "New name"},
+			&handlers.UpdateParams{ID: toUpdate.ID, Name: "New name"},
 			httptests.NewRequestAuth(s1),
 		},
 		{
 			"Updating unexisting portolio",
 			http.StatusNotFound,
-			&portfolios.UpdateParams{ID: "9cef9a62-f320-4efe-b52c-6038c1e4668c", Name: "New name"},
+			&handlers.UpdateParams{ID: "9cef9a62-f320-4efe-b52c-6038c1e4668c", Name: "New name"},
 			httptests.NewRequestAuth(s1),
 		},
 	}
@@ -90,9 +91,9 @@ func TestIntegrationUpdate(t *testing.T) {
 	})
 }
 
-func callUpdate(t *testing.T, params *portfolios.UpdateParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callUpdate(t *testing.T, params *handlers.UpdateParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: portfolios.Endpoints[portfolios.EndpointUpdate],
+		Endpoint: handlers.Endpoints[handlers.EndpointUpdate],
 		Params:   params,
 		Auth:     auth,
 		Router:   api.GetRouter(deps),

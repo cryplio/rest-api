@@ -1,4 +1,4 @@
-package portfolios_test
+package handlers_test
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 	"github.com/Nivl/go-rest-tools/security/auth/testauth"
 
 	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	"github.com/cryplio/rest-api/src/modules/portfolios/testportfolios"
 	"github.com/dchest/uniuri"
 	gomock "github.com/golang/mock/gomock"
@@ -63,7 +64,7 @@ func TestUpdateInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointUpdate].Guard
+	g := handlers.Endpoints[handlers.EndpointUpdate].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -101,12 +102,12 @@ func TestUpdateValidParams(t *testing.T) {
 		t.Run(tc.description, func(t *testing.T) {
 			t.Parallel()
 
-			endpts := portfolios.Endpoints[portfolios.EndpointUpdate]
+			endpts := handlers.Endpoints[handlers.EndpointUpdate]
 			data, err := endpts.Guard.ParseParams(tc.sources, nil)
 			assert.NoError(t, err)
 
 			if data != nil {
-				p := data.(*portfolios.UpdateParams)
+				p := data.(*handlers.UpdateParams)
 				assert.Equal(t, tc.sources["url"].Get("id"), p.ID)
 			}
 		})
@@ -129,7 +130,7 @@ func TestUpdateAccess(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointUpdate].Guard
+	g := handlers.Endpoints[handlers.EndpointUpdate].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -140,7 +141,7 @@ func TestUpdateHappyPath(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	portfolio := testportfolios.NewPortfolio()
-	handlerParams := &portfolios.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:   portfolio.ID,
 		Name: "my renamed portfolio",
 	}
@@ -165,7 +166,7 @@ func TestUpdateHappyPath(t *testing.T) {
 	req.EXPECT().User().Return(portfolio.User)
 
 	// call the handler
-	err := portfolios.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 	assert.NoError(t, err, "the handler should not have fail")
 }
 
@@ -175,7 +176,7 @@ func TestUpdatePortfolioNotFound(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	handlerParams := &portfolios.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:   "9cef9a62-f320-4efe-b52c-6038c1e4668c",
 		Name: "my renamed portfolio",
 	}
@@ -189,7 +190,7 @@ func TestUpdatePortfolioNotFound(t *testing.T) {
 	req.EXPECT().Params().Return(handlerParams)
 
 	// call the handler
-	err := portfolios.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 	require.Error(t, err, "the handler should have fail")
 	httpErr := apierror.Convert(err)
 	assert.Equal(t, http.StatusNotFound, httpErr.HTTPStatus())
@@ -203,7 +204,7 @@ func TestUpdateWrongUser(t *testing.T) {
 
 	requester := testauth.NewUser()
 	portfolio := testportfolios.NewPortfolio()
-	handlerParams := &portfolios.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:   portfolio.ID,
 		Name: "my renamed portfolio",
 	}
@@ -220,7 +221,7 @@ func TestUpdateWrongUser(t *testing.T) {
 	req.EXPECT().User().Return(requester)
 
 	// call the handler
-	err := portfolios.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 	require.Error(t, err, "the handler should have fail")
 	httpErr := apierror.Convert(err)
 	assert.Equal(t, http.StatusNotFound, httpErr.HTTPStatus())
@@ -233,7 +234,7 @@ func TestUpdateUpdateError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	portfolio := testportfolios.NewPortfolio()
-	handlerParams := &portfolios.UpdateParams{
+	handlerParams := &handlers.UpdateParams{
 		ID:   portfolio.ID,
 		Name: "my renamed portfolio",
 	}
@@ -251,7 +252,7 @@ func TestUpdateUpdateError(t *testing.T) {
 	req.EXPECT().User().Return(portfolio.User)
 
 	// call the handler
-	err := portfolios.Update(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Update(req, &router.Dependencies{DB: mockDB})
 	require.Error(t, err, "the handler should have fail")
 	httpErr := apierror.Convert(err)
 	assert.Equal(t, http.StatusInternalServerError, httpErr.HTTPStatus())
