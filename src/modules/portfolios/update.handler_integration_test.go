@@ -15,7 +15,6 @@ import (
 	"github.com/Nivl/go-rest-tools/network/http/httptests"
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
-	"github.com/cryplio/rest-api/src/modules/users"
 	"github.com/cryplio/rest-api/src/modules/users/testusers"
 	"github.com/stretchr/testify/assert"
 )
@@ -43,7 +42,7 @@ func TestIntegrationUpdate(t *testing.T) {
 		{
 			"Not logged",
 			http.StatusUnauthorized,
-			&portfolios.UpdateParams{ID: u1.ID},
+			&portfolios.UpdateParams{ID: toUpdate.ID},
 			nil,
 		},
 		{
@@ -54,7 +53,7 @@ func TestIntegrationUpdate(t *testing.T) {
 		},
 		{
 			"Updating portfolio",
-			http.StatusNotFound,
+			http.StatusOK,
 			&portfolios.UpdateParams{ID: toUpdate.ID, Name: "New name"},
 			httptests.NewRequestAuth(s1),
 		},
@@ -77,7 +76,7 @@ func TestIntegrationUpdate(t *testing.T) {
 				assert.Equal(t, tc.code, rec.Code)
 
 				if rec.Code == http.StatusOK {
-					var u users.ProfilePayload
+					var u portfolios.Payload
 					if err := json.NewDecoder(rec.Body).Decode(&u); err != nil {
 						t.Fatal(err)
 					}

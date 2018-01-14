@@ -10,7 +10,7 @@ import (
 
 var updateEndpoint = &router.Endpoint{
 	Verb:    http.MethodPatch,
-	Path:    "/users/{id}",
+	Path:    "/portfolios/{id}",
 	Handler: Update,
 	Guard: &guard.Guard{
 		ParamStruct: &UpdateParams{},
