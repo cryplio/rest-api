@@ -1,6 +1,6 @@
 // +build integration
 
-package sessions_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -8,12 +8,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
+
 	"github.com/Nivl/go-rest-tools/dependencies"
 	"github.com/Nivl/go-rest-tools/network/http/httptests"
 	"github.com/Nivl/go-rest-tools/security/auth/testauth"
 	"github.com/Nivl/go-rest-tools/testing/integration"
 	"github.com/cryplio/rest-api/src/modules/api"
-	"github.com/cryplio/rest-api/src/modules/sessions"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,27 +29,25 @@ func TestAdd(t *testing.T) {
 	defer helper.Close()
 	dbCon := helper.Deps.DB()
 
-	u1 := testauth.NewPersistedUser(t, dbCon, nil)
+	_, userSession := testauth.NewPersistedAuth(t, dbCon)
 
 	tests := []struct {
 		description string
 		code        int
-		params      *sessions.AddParams
+		params      *handlers.AddParams
+		auth        *httptests.RequestAuth
 	}{
 		{
-			"Unexisting email should fail",
-			http.StatusBadRequest,
-			&sessions.AddParams{Email: "invalid@fake.com", Password: "fake"},
+			"Not logged",
+			http.StatusUnauthorized,
+			&handlers.AddParams{Name: "My portfolio"},
+			nil,
 		},
 		{
-			"Invalid password should fail",
-			http.StatusBadRequest,
-			&sessions.AddParams{Email: u1.Email, Password: "invalid"},
-		},
-		{
-			"Valid Request should work",
+			"It should add a new portfolio",
 			http.StatusCreated,
-			&sessions.AddParams{Email: u1.Email, Password: "fake"},
+			&handlers.AddParams{Name: "My portfolio"},
+			httptests.NewRequestAuth(userSession),
 		},
 	}
 
@@ -58,27 +58,28 @@ func TestAdd(t *testing.T) {
 				t.Parallel()
 				defer helper.RecoverPanic()
 
-				rec := callAdd(t, tc.params, helper.Deps)
+				rec := callHandlerAdd(t, tc.params, tc.auth, helper.Deps)
 				assert.Equal(t, tc.code, rec.Code)
 
 				if rec.Code == http.StatusCreated {
-					var session sessions.Payload
-					if err := json.NewDecoder(rec.Body).Decode(&session); err != nil {
+					var p portfolios.Payload
+					if err := json.NewDecoder(rec.Body).Decode(&p); err != nil {
 						t.Fatal(err)
 					}
 
-					assert.NotEmpty(t, session.Token)
-					assert.Equal(t, u1.ID, session.UserID)
+					assert.NotEmpty(t, p.ID)
+					assert.Equal(t, tc.params.Name, p.Name)
 				}
 			})
 		}
 	})
 }
 
-func callAdd(t *testing.T, params *sessions.AddParams, deps dependencies.Dependencies) *httptest.ResponseRecorder {
+func callHandlerAdd(t *testing.T, params *handlers.AddParams, auth *httptests.RequestAuth, deps dependencies.Dependencies) *httptest.ResponseRecorder {
 	ri := &httptests.RequestInfo{
-		Endpoint: sessions.Endpoints[sessions.EndpointAdd],
+		Endpoint: handlers.Endpoints[handlers.EndpointAdd],
 		Params:   params,
+		Auth:     auth,
 		Router:   api.GetRouter(deps),
 	}
 	return httptests.NewRequest(t, ri)

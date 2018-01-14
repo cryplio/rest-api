@@ -1,4 +1,4 @@
-package portfolios_test
+package handlers_test
 
 import (
 	"errors"
@@ -17,6 +17,7 @@ import (
 	"github.com/Nivl/go-rest-tools/types/apierror"
 	"github.com/Nivl/go-sqldb/implementations/mocksqldb"
 	"github.com/cryplio/rest-api/src/modules/portfolios"
+	"github.com/cryplio/rest-api/src/modules/portfolios/http/handlers"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,7 +46,7 @@ func TestAddInvalidParams(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointAdd].Guard
+	g := handlers.Endpoints[handlers.EndpointAdd].Guard
 	testguard.InvalidParams(t, g, testCases)
 }
 
@@ -65,7 +66,7 @@ func TestAddAccess(t *testing.T) {
 		},
 	}
 
-	g := portfolios.Endpoints[portfolios.EndpointAdd].Guard
+	g := handlers.Endpoints[handlers.EndpointAdd].Guard
 	testguard.AccessTest(t, g, testCases)
 }
 
@@ -76,7 +77,7 @@ func TestAddHappyPath(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	user := testauth.NewUser()
-	handlerParams := &portfolios.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name: "my portfolio",
 	}
 
@@ -98,7 +99,7 @@ func TestAddHappyPath(t *testing.T) {
 	req.EXPECT().User().Return(user).Times(2)
 
 	// call the handler
-	err := portfolios.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Nil(t, err, "the handler should not have fail")
@@ -111,7 +112,7 @@ func TestAddCreateError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	user := testauth.NewUser()
-	handlerParams := &portfolios.AddParams{
+	handlerParams := &handlers.AddParams{
 		Name: "my portfolio",
 	}
 
@@ -125,7 +126,7 @@ func TestAddCreateError(t *testing.T) {
 	req.EXPECT().User().Return(user).Times(2)
 
 	// call the handler
-	err := portfolios.Add(req, &router.Dependencies{DB: mockDB})
+	err := handlers.Add(req, &router.Dependencies{DB: mockDB})
 
 	// Assert everything
 	assert.Error(t, err, "the handler should have fail")

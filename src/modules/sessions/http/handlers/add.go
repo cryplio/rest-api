@@ -1,4 +1,4 @@
-package sessions
+package handlers
 
 import (
 	"database/sql"
@@ -9,6 +9,7 @@ import (
 	"github.com/Nivl/go-rest-tools/router/guard"
 	"github.com/Nivl/go-rest-tools/security/auth"
 	"github.com/Nivl/go-rest-tools/types/apierror"
+	"github.com/cryplio/rest-api/src/modules/sessions"
 )
 
 var addEndpoint = &router.Endpoint{
@@ -50,6 +51,6 @@ func Add(req router.HTTPRequest, deps *router.Dependencies) error {
 		return err
 	}
 
-	req.Response().Created(NewPayload(s))
+	req.Response().Created(sessions.NewPayload(s))
 	return nil
 }

@@ -1,4 +1,4 @@
-package portfolios
+package handlers
 
 import (
 	"net/http"
@@ -6,6 +6,7 @@ import (
 	"github.com/Nivl/go-rest-tools/router"
 	"github.com/Nivl/go-rest-tools/router/guard"
 	"github.com/Nivl/go-rest-tools/types/apierror"
+	"github.com/cryplio/rest-api/src/modules/portfolios"
 )
 
 var deleteEndpoint = &router.Endpoint{
@@ -27,7 +28,7 @@ type DeleteParams struct {
 func Delete(req router.HTTPRequest, deps *router.Dependencies) error {
 	params := req.Params().(*DeleteParams)
 
-	portfolio, err := GetPortfolioByID(deps.DB, params.ID)
+	portfolio, err := portfolios.GetPortfolioByID(deps.DB, params.ID)
 	if err != nil {
 		return err
 	}
