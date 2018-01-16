@@ -7,7 +7,7 @@ CREATE TABLE tickers (
   updated_at timestamptz NOT NULL,
   deleted_at timestamptz,
   name VARCHAR NOT NULL CHECK (length(name) < 50), -- ex Litecoin
-  unit VARCHAR CHECK (length(curency_symbol) < 10), -- ex Ł
+  unit VARCHAR CHECK (length(unit) < 10), -- ex Ł
   marketcap BIGINT CHECK (marketcap >= 0),
   volume_24h BIGINT CHECK (volume_24h >= 0),
   max_supply BIGINT CHECK (max_supply >= 0),
