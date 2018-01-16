@@ -2,12 +2,11 @@
 -- SQL in this section is executed when the migration is applied.
 
 CREATE TABLE tickers (
-  id UUID NOT NULL,
+  id VARCHAR NOT NULL CHECK (length(symbol) < 10), -- ex LTC,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
   deleted_at timestamptz,
   name VARCHAR NOT NULL CHECK (length(name) < 50), -- ex Litecoin
-  symbol VARCHAR NOT NULL UNIQUE CHECK (length(symbol) < 10), -- ex LTC,
   unit VARCHAR CHECK (length(curency_symbol) < 10), -- ex Ł
   marketcap BIGINT CHECK (marketcap >= 0),
   volume_24h BIGINT CHECK (volume_24h >= 0),

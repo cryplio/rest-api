@@ -61,8 +61,8 @@ func UpdateList(con sqldb.Connection, httpClient interfaces.HTTPGetter, pageSize
 			_, alreadyInDB := existingTickers[ticker.Symbol]
 			if !alreadyInDB {
 				t := &tickers.Ticker{
+					ID:              ticker.Symbol,
 					Name:            ticker.Name,
-					Symbol:          ticker.Symbol,
 					CoinMarketCapID: ticker.ID,
 				}
 

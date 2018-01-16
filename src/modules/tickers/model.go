@@ -5,7 +5,7 @@ import (
 )
 
 // Ticker represents a coin/token
-//go:generate api-cli generate model Ticker -t tickers
+//go:generate api-cli generate model Ticker -t tickers --use-uuid=false
 type Ticker struct {
 	ID        string             `db:"id"`
 	CreatedAt *datetime.DateTime `db:"created_at"`
@@ -13,7 +13,6 @@ type Ticker struct {
 	DeletedAt *datetime.DateTime `db:"deleted_at"`
 
 	Name             string   `db:"name"`
-	Symbol           string   `db:"symbol"`
 	Unit             *string  `db:"unit"`
 	Marketcap        *int64   `db:"marketcap"`
 	Volume24h        *int64   `db:"volume_24h"`
