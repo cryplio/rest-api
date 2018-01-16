@@ -14,7 +14,7 @@ CREATE TABLE tickers (
   current_supply BIGINT CHECK (current_supply >= 0),
   logo_url VARCHAR CHECK (length(logo_url) < 255),
   website VARCHAR CHECK (length(website) < 255),
-  price_usd REAL NOT NULL CHECK (price >= 0),
+  price_usd REAL NOT NULL CHECK (price_usd >= 0),
   percent_change_1h REAL CHECK (percent_change_1h >= 0),
   percent_change_24h REAL CHECK (percent_change_24h >= 0),
   percent_change_7d REAL CHECK (percent_change_7d >= 0),
