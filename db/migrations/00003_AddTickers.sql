@@ -2,7 +2,7 @@
 -- SQL in this section is executed when the migration is applied.
 
 CREATE TABLE tickers (
-  id VARCHAR NOT NULL CHECK (length(symbol) < 10), -- ex LTC,
+  id VARCHAR NOT NULL CHECK (length(id) < 10), -- ex LTC,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
   deleted_at timestamptz,
